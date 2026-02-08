@@ -259,9 +259,17 @@ nav .logo {
   let localstream;    //pc for the call itself and localstream for microphone
 const socket = io("https://space-code-backend.vercel.app");
 
-
+socket.on("connect", () => {
+  console.log("✅ Socket connected:", socket.id);
 socket.emit("join-room", document.getElementById("roomid").value);
 socket.emit("join-coderoom", document.getElementById("codeid").value);
+});
+
+socket.on("connect_error", (err) => {
+  console.error("❌ Socket connection error:", err.message);
+});
+
+
 
 socket.on("receive-message", (data) => {
   const chat = document.getElementById("chat-messages");
