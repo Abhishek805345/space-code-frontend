@@ -1,5 +1,5 @@
 exports.saveroominfo=async (data)=>{
-  const responce=await fetch("http://space-code-backend.vercel.app/api/room/info",{
+  const responce=await fetch("https://space-code-backend.vercel.app/api/room/info",{
     method:"post",
     headers:{
       "Content-Type":"application/json"
@@ -11,13 +11,13 @@ exports.saveroominfo=async (data)=>{
 }
 //fetch rooms
 exports.fetchrooms=async (id)=>{
-  const responce=await fetch(`http://space-code-backend.vercel.app/api/saved/room/${id}`);
+  const responce=await fetch(`https://space-code-backend.vercel.app/api/saved/room/${id}`);
   const result=await responce.json();
   return result;
 }
 //fetch single room data
 exports.findmyroom= async (id)=>{
-  const responce=await fetch(`http://space-code-backend.vercel.app/api/myroom/${id}`,{
+  const responce=await fetch(`https://space-code-backend.vercel.app/api/myroom/${id}`,{
     method:'get'
   });
   const result=await responce.json();
@@ -25,7 +25,7 @@ exports.findmyroom= async (id)=>{
 }
 //invitation api
 exports.inviteuser=async (data)=>{
-  const responce =await fetch("http://space-code-backend.vercel.app/api/invite/user",{
+  const responce =await fetch("https://space-code-backend.vercel.app/api/invite/user",{
     method:"post",
     headers:{
       "Content-Type":"application/json"
