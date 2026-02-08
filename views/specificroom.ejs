@@ -255,8 +255,8 @@ nav .logo {
 <script>
   let audiounlocked=false;
   let iamcaller=false;
-  let pc;
-  let localstream;    //pc for the call itself and localstream for microphone
+  let pc=null;
+  let localstream=null;    //pc for the call itself and localstream for microphone
 const socket = io("https://space-code-backend.onrender.com");
 
 socket.on("connect", () => {
@@ -300,6 +300,7 @@ function submitcode() {
 }
 //function for creating the pc peer connection
 async function createpc(){
+if (pc) return;
   pc=new RTCPeerConnection({
   iceServers:[{urls:"stun:stun.l.google.com:19302"}]
 })
@@ -333,7 +334,7 @@ async function audio(){
     console.log('audio unlocked');
   }
   createpc();
-
+iamcaller=true;
 
 //getting user audio channel 
 localstream=await  navigator.mediaDevices.getUserMedia({audio:true});
