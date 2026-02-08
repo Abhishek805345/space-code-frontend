@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Not Found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 48px;
+      color: #e74c3c;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      margin: 10px 0;
+      color: #333;
+    }
+
+    p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #3498db;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #2c80b4;
+    }
+
+    .secondary {
+      margin-top: 12px;
+      display: block;
+      font-size: 13px;
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .secondary:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="icon">⚠️</div>
+    <h2>User Not Found</h2>
+    <p>
+      The email address you entered is not registered with us.
+      Please check the email or try again.
+    </p>
+
+    <a href="/login-in" class="btn">Try Again</a>
+    <a href="/register" class="secondary">Create a new account</a>
+  </div>
+</body>
+</html>
