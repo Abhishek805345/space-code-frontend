@@ -1,5 +1,5 @@
 exports.sess=async ()=>{
-  const responce=await fetch("http://localhost:3001/api/sess");
+  const responce=await fetch("http://space-code-backend.vercel.app/api/sess");
   const result=await responce.json();
   return result;
 }
