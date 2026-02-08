@@ -337,7 +337,6 @@ async function audio(){
     console.log('audio unlocked');
   }
   createpc();
-iamcaller=true;
 
 //getting user audio channel 
 localstream=await  navigator.mediaDevices.getUserMedia({audio:true});
@@ -347,6 +346,7 @@ localstream.getTracks().forEach(tracks=>{
 })
 
 if (!iamcaller){
+iamcaller=true;
 //creating an offer so that other user accept it and ready to receive the audio
 const offer=await pc.createOffer();
 await pc.setLocalDescription(offer);
@@ -360,9 +360,9 @@ socket.emit('offer',({
 
 
 //receiving the ice-candidate
- socket.on('ice-candidate',async (icecandidate)=>{
-  if (icecandidate){
-    await pc.addIceCandidate(icecandidate);
+ socket.on('ice-candidate',async ({icecandidate})=>{
+  if (icecandidate && pc){
+    await pc.addIceCandidate(new RTCIceCandidate(icecandidate));
   }
 });
 
