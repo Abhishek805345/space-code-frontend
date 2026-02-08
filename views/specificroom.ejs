@@ -360,7 +360,7 @@ socket.emit('offer',({
 
 
 //receiving the ice-candidate
- socket.on('ice-candidate',async ({icecandidate})=>{
+ socket.on('ice-candidate',async ({candidate})=>{
    if (!candidate || !pc) return;
 
   try {
