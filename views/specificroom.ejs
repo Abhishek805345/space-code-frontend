@@ -361,8 +361,17 @@ socket.emit('offer',({
 
 //receiving the ice-candidate
  socket.on('ice-candidate',async ({icecandidate})=>{
-  if (icecandidate && pc){
-    await pc.addIceCandidate(new RTCIceCandidate(icecandidate));
+ if (!data || !data.candidate) {
+    console.warn("⚠️ ICE candidate missing or null:", data);
+    return;
+  }
+
+  if (!pc) return;
+
+  try {
+    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+  } catch (err) {
+    console.error("❌ ICE add error:", err);
   }
 });
 
