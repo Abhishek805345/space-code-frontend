@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite User</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #1f2933;
+            color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            background-color: #3a4a5a;
+        }
+
+        /* Page Container */
+        .container {
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .invite-box {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+
+        .invite-box h2 {
+            color: #1f2933;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .invite-box p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .note {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">Hi, <%= userdata.username %></div>
+        <ul>
+            <li><a href="/post-home/<%=userdata._id%>">Home</a></li>
+            <li><a href="/get-room/<%= userdata._id %>">Project Rooms</a></li>
+            <li><a href="/logout/<%= userdata._id %>">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Invite Form -->
+    <div class="container">
+        <form class="invite-box" action="/invite-user" method="POST">
+            <h2>Invite a User</h2>
+            <p>Enter the email address to invite someone to this room.</p>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    required
+                >
+            </div>
+            <input type="hidden" name="_id" value="<%=roomid%>"> 
+            <input type="hidden" name="hostid" value="<%=userdata._id%>">
+            <button type="submit" class="btn">Send Invitation</button>
+
+            <div class="note">
+                An invitation link will be sent to the provided email.
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

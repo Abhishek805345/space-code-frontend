@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Project</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper {
+            background: #ffffff;
+            width: 800px;
+            display: flex;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* Left - Form */
+        .left {
+            width: 50%;
+            padding: 32px;
+        }
+
+        .left h1 {
+            font-size: 22px;
+            margin-bottom: 28px;
+            color: #1f2933;
+        }
+
+        .field {
+            margin-bottom: 26px;
+        }
+
+        /* Bold labels */
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2933;
+            margin-bottom: 6px;
+        }
+
+        /* Underline inputs + selects */
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid #d1d5db;
+            padding: 8px 2px;
+            font-size: 14px;
+            outline: none;
+            background: transparent;
+        }
+
+        .field textarea {
+            resize: none;
+        }
+
+        .field select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-bottom-color: #2563eb;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 11px;
+            font-size: 15px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Right - Info */
+        .right {
+            width: 50%;
+            background: #f9fafb;
+            padding: 32px;
+        }
+
+        .right h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #111827;
+        }
+
+        .right p {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .tip {
+            background: #e0f2fe;
+            padding: 12px;
+            border-left: 4px solid #2563eb;
+            font-size: 13px;
+            color: #1e3a8a;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+                width: 95%;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- Left: Form -->
+    <div class="left">
+        <h1>Create Project</h1>
+
+        <form action="/post-req" method="POST">
+
+            <div class="field">
+                <label>Project Name</label>
+                <input type="text" name="projectName" required>
+            </div>
+
+            <div class="field">
+                <label>Users Allowed</label>
+                <input type="number" name="maxUser" min="1" required>
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+                <textarea name="description" rows="3"></textarea>
+            </div>
+            <input type="hidden" value="0" name="currentUser">
+
+            <!-- Room Type -->
+            <div class="field">
+                <label>Room Type</label>
+                <select name="roomType" required>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+
+            <!-- Live Chat -->
+            <div class="field">
+                <label>Live Chat</label>
+                <select name="liveChat" required>
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+            <input type="hidden" name="hostid" value="<%=_id%>">
+            <button type="submit" class="submit-btn">Create Project</button>
+        </form>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="right">
+        <h2>Project Setup Tips</h2>
+
+        <p>
+            Public projects are visible to others, while private projects
+            are accessible only by invitation.
+        </p>
+
+        <p>
+            Enable live chat if your team needs instant communication
+            during development.
+        </p>
+
+        <p>
+            Keep the description short and focused so collaborators
+            understand the project quickly.
+        </p>
+
+        <div class="tip">
+            💡 You can always change room type and chat settings later
+            from project settings.
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

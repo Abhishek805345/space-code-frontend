@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Room</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* =======================
+   RESET & BASE
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  display: flex;
+  flex-direction: column;
+}
+
+/* =======================
+   NAVBAR
+======================= */
+nav {
+  height: 60px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+nav .logo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =======================
+   MAIN LAYOUT
+======================= */
+.container {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+/* =======================
+   CODE SECTION
+======================= */
+.code-section {
+  flex: 2;
+  background: #ffffff;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.code-header {
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.code-editor {
+  flex: 1;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+.code-editor textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  background: #0f172a;
+  color: #e5e7eb;
+  border: none;
+  outline: none;
+}
+
+/* =======================
+   CODE ACTION BAR
+======================= */
+.code-actions {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.code-actions button {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 16px rgba(79,70,229,0.35);
+  transition: all 0.25s ease;
+}
+
+.code-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(79,70,229,0.45);
+}
+
+.code-actions button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(79,70,229,0.35);
+}
+
+/* =======================
+   CHAT SECTION
+======================= */
+.chat-section {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.chat-header {
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-message {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #e5e7eb;
+  font-size: 14px;
+}
+
+.chat-message.me {
+  margin-left: auto;
+  background: #dbeafe;
+}
+
+.chat-input {
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+.chat-section button {
+  margin: 0 12px 12px;
+  padding: 12px;
+  border: none;
+  background: #64748b;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.chat-section button:hover {
+  background: #475569;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">Collab Room</div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+  
+  <!-- CODE AREA -->
+  <div class="code-section">
+    <div class="code-header">Code Editor</div>
+
+    <div class="code-editor">
+      <textarea id="code" placeholder="Write your code here...">
+        <%if (data.code&& data.code.length>0){%>
+          <%=data.code%>
+          <%}%>
+      </textarea>
+    </div>
+
+    <div class="code-actions">
+     <button onclick="submitcode()">▶ Submit Code</button>
+    </div>
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-section">
+    <div class="chat-header">Chat</div>
+
+    <div id="chat-messages" class="chat-messages"></div>
+
+    <button onclick="send()">Send</button>
+    <button onclick="audio()"><h1>🎤</h1></button>
+
+    <div class="chat-input">
+      <input type="text" id="chat" placeholder="Type your message..." />
+      <input type="hidden" id="roomid" value="<%=data._id%>" />
+      <input type="hidden" id="hostid" value="<%=data.hostid%>" />
+      <input type="hidden" id="codeid" value="<%=data._id%>code" />
+    </div>
+  </div>
+
+</div>
+
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
+
+
+<script>
+  let audiounlocked=false;
+  let iamcaller=false;
+  let pc;
+  let localstream;    //pc for the call itself and localstream for microphone
+const socket = io("http://localhost:3001");
+
+
+socket.emit("join-room", document.getElementById("roomid").value);
+socket.emit("join-coderoom", document.getElementById("codeid").value);
+
+socket.on("receive-message", (data) => {
+  const chat = document.getElementById("chat-messages");
+  const msg = document.createElement("div");
+  msg.className = "chat-message";
+  msg.textContent = `${data.message} (${data.time})`;
+  chat.appendChild(msg);
+});
+
+socket.on("receive-code", ({ message }) => {
+  document.getElementById("code").value = message;
+});
+
+function send() {
+  socket.emit("send-message", {
+    roomid: document.getElementById("roomid").value,
+    message: document.getElementById("chat").value,
+    hostid: document.getElementById("hostid").value
+  });
+}
+
+function submitcode() {
+  socket.emit("send-code", {
+    codeid: document.getElementById("codeid").value,
+    message: document.getElementById("code").value,
+    roomid: document.getElementById("roomid").value       //to save the code to db with roomid
+  });
+}
+//function for creating the pc peer connection
+async function createpc(){
+  pc=new RTCPeerConnection({
+  iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+})
+//sending ice candidate info to other user
+pc.onicecandidate=(event)=>{                                  //Browser finds ways to reach you. Each way is called an ICE candidate
+  if (event.candidate){                                 //You send it to the other user using Socket.IO
+    socket.emit('ice-candidate',{
+      eventcandidate:event.candidate,
+      roomid:document.getElementById('roomid').value
+    });
+    console.log("we found this",event.candidate);
+  }
+}
+//receive other user voice
+pc.ontrack=(event)=>{                                     //Other user speaks.  Browser receives audio. You play it automatically
+  const audio=document.createElement('audio');
+  audio.srcObject=event.streams[0];
+  audio.autoplay=true;
+  audio.muted=false;
+  document.body.appendChild(audio);
+  audio.play().catch(error=>{
+    console.log('found this error ',error);
+  })
+}
+}//end of createpc() fxn
+
+async function audio(){
+  //creating a direct connection with other browser
+  if (!audiounlocked){
+    audiounlocked=true;
+    console.log('audio unlocked');
+  }
+  createpc();
+
+
+//getting user audio channel 
+localstream=await  navigator.mediaDevices.getUserMedia({audio:true});
+//attach the user voice to the call
+localstream.getTracks().forEach(tracks=>{
+  pc.addTrack(tracks,localstream);
+})
+
+if (!iamcaller){
+//creating an offer so that other user accept it and ready to receive the audio
+const offer=await pc.createOffer();
+await pc.setLocalDescription(offer);
+socket.emit('offer',({
+  offer:offer,
+  roomid:document.getElementById("roomid").value
+}))
+}
+
+} //end of audio() fxn 
+
+
+//receiving the ice-candidate
+ socket.on('ice-candidate',async (icecandidate)=>{
+  if (icecandidate){
+    await pc.addIceCandidate(icecandidate);
+  }
+});
+
+
+//receive offer
+socket.on('offer',async (offer)=>{
+  createpc();
+  await pc.setRemoteDescription(offer);
+  const answer=await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  socket.emit('answer',{
+    roomid:document.getElementById("roomid").value,
+    answer
+  })
+});
+socket.on('answer',async (answer)=>{
+    if (pc.signalingState !== "have-local-offer") {
+    console.warn("Skipping answer, wrong state:", pc.signalingState);
+    return;
+  }
+  await pc.setRemoteDescription(answer);
+});
+
+</script>
+
+</body>
+</html>
