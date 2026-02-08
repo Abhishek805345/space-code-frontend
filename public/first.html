@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>My Project | Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+/* =======================
+   VARIABLES
+======================= */
+:root {
+  --primary: #6366f1;
+  --secondary: #22d3ee;
+  --text: #1e293b;
+  --nav-bg: rgba(15,23,42,0.85);
+  --card: rgba(255,255,255,.9);
+}
+
+/* =======================
+   GLOBAL
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+body {
+  background: #eef2ff;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* =======================
+   NAVBAR (TRANSPARENT)
+======================= */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+nav.scrolled {
+  background: var(--nav-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+nav h2 {
+  color: white;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0,0,0,.5);
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+  text-shadow: 0 2px 6px rgba(0,0,0,.5);
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -6px;
+  left: 0;
+  background: var(--secondary);
+  transition: .3s;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: white;
+}
+
+/* =======================
+   HERO WITH VIDEO
+======================= */
+.hero {
+  position: relative;
+  min-height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 90px; /* navbar height */
+}
+
+/* Video */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Overlay */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(15,23,42,.75),
+    rgba(15,23,42,.75)
+  );
+  z-index: 2;
+}
+
+/* Content */
+.hero-content {
+  position: relative;
+  z-index: 3;
+  color: white;
+  max-width: 900px;
+  padding: 40px 20px;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.hero-content p {
+  font-size: 18px;
+  opacity: .9;
+  margin-bottom: 35px;
+}
+
+.hero .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero a {
+  padding: 14px 32px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.btn-primary {
+  background: white;
+  color: var(--primary);
+}
+
+.btn-secondary {
+  border: 2px solid white;
+  color: white;
+}
+
+.hero a:hover {
+  transform: translateY(-6px);
+}
+
+/* =======================
+   FEATURES
+======================= */
+.features {
+  padding: 90px 40px;
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  flex-wrap: wrap;
+  background: #eef2ff;
+}
+
+.card {
+  width: 280px;
+  padding: 30px;
+  background: var(--card);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.15);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: .6s ease;
+}
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.04);
+}
+
+/* =======================
+   FOOTER
+======================= */
+footer {
+  background: #020617;
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* =======================
+   MOBILE
+======================= */
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: var(--nav-bg);
+    width: 100%;
+    flex-direction: column;
+    padding: 20px;
+    display: none;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .hero-content h1 {
+    font-size: 34px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <h2>Code_Space</h2>
+
+  <div class="hamburger" onclick="toggleMenu()">☰</div>
+
+  <div class="nav-links" id="menu">
+    <a href="/home">Home</a>
+    <a href="/about">About</a>
+    <a href="/login-in">Login</a>
+    <a href="/register">Register</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="/hero.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1>Building a Modern Full-Stack Project 🚀</h1>
+    <p>Node.js • Express • MongoDB • Clean UI • Scalable Architecture</p>
+
+    <div class="buttons">
+      <a href="#" class="btn-primary">Get Started</a>
+      <a href="#" class="btn-secondary">Learn More</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="card reveal">
+    <h3>🔐 Secure Authentication</h3>
+    <p>JWT based login with protected routes.</p>
+  </div>
+
+  <div class="card reveal">
+    <h3>⚙️ RESTful APIs</h3>
+    <p>Clean and scalable backend APIs.</p>
+  </div>
+
+  <div class="card reveal">
+    <h3>🚀 Future Ready</h3>
+    <p>Easy migration to React or Next.js.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 MyProject · Built for Learning & Growth
+</footer>
+
+<script>
+/* HAMBURGER MENU */
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("active");
+}
+
+/* NAVBAR SCROLL EFFECT */
+const navbar = document.getElementById("navbar");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
+
+/* SCROLL REVEAL */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
