@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Successful</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-box {
+            background: #ffffff;
+            padding: 45px 35px;
+            max-width: 420px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #1f2933;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            background-color: #2563eb;
+            margin-bottom: 12px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .secondary {
+            background-color: #64748b;
+        }
+
+        .secondary:hover {
+            background-color: #475569;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #777;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-box">
+        <div class="icon">🎉</div>
+        <h2>User Invited Successfully</h2>
+        <p>
+            The user has been successfully invited to your room.
+            An invitation link has been sent to their email address.
+        </p>
+
+        <a href="#" class="btn">Go to Room</a>
+        <a href="" class="btn secondary">Invite Another User</a>
+
+        <div class="note">
+            The invited user can join after accepting the invitation.
+        </div>
+    </div>
+
+</body>
+</html>
