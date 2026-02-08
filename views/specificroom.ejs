@@ -388,7 +388,7 @@ socket.on('answer',async ({answer})=>{
     console.warn("Skipping answer, wrong state:", pc.signalingState);
     return;
   }
-  await pc.setRemoteDescription(answer);
+   await pc.setRemoteDescription(new RTCSessionDescription(answer));
 });
 
 </script>
