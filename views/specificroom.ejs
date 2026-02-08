@@ -305,12 +305,12 @@ if (pc) return;
   iceServers:[{urls:"stun:stun.l.google.com:19302"}]
 })
   // 🔥 THIS LINE FIXES "NO AUDIO"
-  pc.addTransceiver("audio", { direction: "recvonly" });
+ pc.addTransceiver("audio", { direction: "sendrecv" });
 //sending ice candidate info to other user
 pc.onicecandidate=(event)=>{                                  //Browser finds ways to reach you. Each way is called an ICE candidate
   if (event.candidate){                                 //You send it to the other user using Socket.IO
     socket.emit('ice-candidate',{
-      eventcandidate:event.candidate,
+      candidate:event.candidate,
       roomid:document.getElementById('roomid').value
     });
     console.log("we found this",event.candidate);
@@ -361,17 +361,13 @@ socket.emit('offer',({
 
 //receiving the ice-candidate
  socket.on('ice-candidate',async ({icecandidate})=>{
- if (!data || !data.candidate) {
-    console.warn("⚠️ ICE candidate missing or null:", data);
-    return;
-  }
-
-  if (!pc) return;
+   if (!candidate || !pc) return;
 
   try {
-    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    await pc.addIceCandidate(new RTCIceCandidate(candidate));
+    console.log("ICE added");
   } catch (err) {
-    console.error("❌ ICE add error:", err);
+    console.error("ICE error:", err);
   }
 });
 
