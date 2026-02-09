@@ -299,32 +299,65 @@ function submitcode() {
   });
 }
 //function for creating the pc peer connection
-async function createpc(){
-if (pc) return;
-  pc=new RTCPeerConnection({
-   iceServers: [
-    { urls: "stun:stun.l.google.com:19302" },
-    {
-      urls: "turn:openrelay.metered.ca:80",
-      username: "openrelayproject",
-      credential: "openrelayproject"
-    },
-    {
-      urls: "turn:openrelay.metered.ca:443",
-      username: "openrelayproject",
-      credential: "openrelayproject"
-    }
-  ]
-setInterval(async () => {
-  if (!pc) return;
-  const stats = await pc.getStats();
-  stats.forEach(report => {
-    if (report.type === "inbound-rtp" && report.kind === "audio") {
-      console.log("🎧 Audio bytes received:", report.bytesReceived);
-    }
+async function createpc() {
+  if (pc) return;
+
+  pc = new RTCPeerConnection({
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      {
+        urls: "turn:openrelay.metered.ca:80",
+        username: "openrelayproject",
+        credential: "openrelayproject"
+      },
+      {
+        urls: "turn:openrelay.metered.ca:443",
+        username: "openrelayproject",
+        credential: "openrelayproject"
+      }
+    ]
   });
-}, 2000);
-})
+
+  // 🔍 DEBUG: check if audio is actually arriving
+  setInterval(async () => {
+    if (!pc) return;
+
+    const stats = await pc.getStats();
+    stats.forEach(report => {
+      if (report.type === "inbound-rtp" && report.kind === "audio") {
+        console.log("🎧 Audio bytes received:", report.bytesReceived);
+      }
+    });
+  }, 2000);
+
+  // keep your existing handlers below
+  pc.addTransceiver("audio", { direction: "sendrecv" });
+
+  pc.onicecandidate = (event) => {
+    if (event.candidate) {
+      socket.emit("ice-candidate", {
+        candidate: event.candidate,
+        roomid: document.getElementById("roomid").value
+      });
+    }
+  };
+
+  pc.ontrack = (event) => {
+    console.log("🎧 ontrack fired");
+
+    const audio = document.createElement("audio");
+    audio.srcObject = event.streams[0];
+    audio.controls = true;
+    audio.autoplay = true;
+
+    document.body.appendChild(audio);
+
+    audio.play().catch(err =>
+      console.error("🔇 play blocked:", err)
+    );
+  };
+}
+
   // 🔥 THIS LINE FIXES "NO AUDIO"
  pc.addTransceiver("audio", { direction: "sendrecv" });
 //sending ice candidate info to other user
