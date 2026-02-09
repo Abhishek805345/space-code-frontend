@@ -249,27 +249,19 @@ nav .logo {
 
 </div>
 
-<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
 
 
 <script>
   let audiounlocked=false;
   let iamcaller=false;
-  let pc=null;
-  let localstream=null;    //pc for the call itself and localstream for microphone
-const socket = io("https://space-code-backend.onrender.com");
+  let pc;
+  let localstream;    //pc for the call itself and localstream for microphone
+const socket = io("http://localhost:3001");
 
-socket.on("connect", () => {
-  console.log("✅ Socket connected:", socket.id);
+
 socket.emit("join-room", document.getElementById("roomid").value);
 socket.emit("join-coderoom", document.getElementById("codeid").value);
-});
-
-socket.on("connect_error", (err) => {
-  console.error("❌ Socket connection error:", err.message);
-});
-
-
 
 socket.on("receive-message", (data) => {
   const chat = document.getElementById("chat-messages");
@@ -326,32 +318,6 @@ pc.ontrack=(event)=>{                                     //Other user speaks.  
 }
 }//end of createpc() fxn
 
-  // 🔥 THIS LINE FIXES "NO AUDIO"
- pc.addTransceiver("audio", { direction: "sendrecv" });
-//sending ice candidate info to other user
-pc.onicecandidate=(event)=>{                                  //Browser finds ways to reach you. Each way is called an ICE candidate
-  if (event.candidate){                                 //You send it to the other user using Socket.IO
-    socket.emit('ice-candidate',{
-      candidate:event.candidate,
-      roomid:document.getElementById('roomid').value
-    });
-    console.log("we found this",event.candidate);
-  }
-}
-//receive other user voice
-pc.ontrack=(event)=>{                                     //Other user speaks.  Browser receives audio. You play it automatically
-  const audio=document.createElement('audio');
-  audio.srcObject=event.streams[0];
-  audio.autoplay=true;
-  audio.muted=false;
-   audio.controls=true;
-  document.body.appendChild(audio);
-  audio.play().catch(error=>{
-    console.log('found this error ',error);
-  })
-}
-}//end of createpc() fxn
-
 async function audio(){
   //creating a direct connection with other browser
   if (!audiounlocked){
@@ -359,6 +325,7 @@ async function audio(){
     console.log('audio unlocked');
   }
   createpc();
+
 
 //getting user audio channel 
 localstream=await  navigator.mediaDevices.getUserMedia({audio:true});
@@ -368,7 +335,6 @@ localstream.getTracks().forEach(tracks=>{
 })
 
 if (!iamcaller){
-iamcaller=true;
 //creating an offer so that other user accept it and ready to receive the audio
 const offer=await pc.createOffer();
 await pc.setLocalDescription(offer);
@@ -382,41 +348,30 @@ socket.emit('offer',({
 
 
 //receiving the ice-candidate
- socket.on('ice-candidate',async ({candidate})=>{
-   if (!candidate || !pc) return;
-
-  try {
-    await pc.addIceCandidate(new RTCIceCandidate(candidate));
-    console.log("ICE added");
-  } catch (err) {
-    console.error("ICE error:", err);
+ socket.on('ice-candidate',async (icecandidate)=>{
+  if (icecandidate){
+    await pc.addIceCandidate(icecandidate);
   }
 });
 
 
 //receive offer
-socket.on('offer', async ({ offer }) => {
+socket.on('offer',async (offer)=>{
   createpc();
-
-  await pc.setRemoteDescription(
-    new RTCSessionDescription(offer)
-  );
-
-  const answer = await pc.createAnswer();
+  await pc.setRemoteDescription(offer);
+  const answer=await pc.createAnswer();
   await pc.setLocalDescription(answer);
-
-  socket.emit('answer', {
-    roomid: document.getElementById("roomid").value,
+  socket.emit('answer',{
+    roomid:document.getElementById("roomid").value,
     answer
-  });
+  })
 });
-
-socket.on('answer',async ({answer})=>{
+socket.on('answer',async (answer)=>{
     if (pc.signalingState !== "have-local-offer") {
     console.warn("Skipping answer, wrong state:", pc.signalingState);
     return;
   }
-   await pc.setRemoteDescription(new RTCSessionDescription(answer));
+  await pc.setRemoteDescription(answer);
 });
 
 </script>
