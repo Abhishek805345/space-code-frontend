@@ -249,7 +249,7 @@ nav .logo {
 
 </div>
 
-<script src="http://localhost:3001/socket.io/socket.io.js"></script>
+<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
 
 
 <script>
@@ -257,7 +257,7 @@ nav .logo {
   let iamcaller=false;
   let pc;
   let localstream;    //pc for the call itself and localstream for microphone
-const socket = io("http://localhost:3001");
+const socket = io("https://space-code-backend.onrender.com");
 
 
 socket.emit("join-room", document.getElementById("roomid").value);
