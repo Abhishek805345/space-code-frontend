@@ -299,63 +299,32 @@ function submitcode() {
   });
 }
 //function for creating the pc peer connection
-async function createpc() {
-  if (pc) return;
-
-  pc = new RTCPeerConnection({
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" },
-      {
-        urls: "turn:openrelay.metered.ca:80",
-        username: "openrelayproject",
-        credential: "openrelayproject"
-      },
-      {
-        urls: "turn:openrelay.metered.ca:443",
-        username: "openrelayproject",
-        credential: "openrelayproject"
-      }
-    ]
-  });
-
-  // 🔍 DEBUG: audio bytes check
-  setInterval(async () => {
-    if (!pc) return;
-
-    const stats = await pc.getStats();
-    stats.forEach(report => {
-      if (report.type === "inbound-rtp" && report.kind === "audio") {
-        console.log("🎧 Audio bytes received:", report.bytesReceived);
-      }
+async function createpc(){
+  pc=new RTCPeerConnection({
+  iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+})
+//sending ice candidate info to other user
+pc.onicecandidate=(event)=>{                                  //Browser finds ways to reach you. Each way is called an ICE candidate
+  if (event.candidate){                                 //You send it to the other user using Socket.IO
+    socket.emit('ice-candidate',{
+      eventcandidate:event.candidate,
+      roomid:document.getElementById('roomid').value
     });
-  }, 2000);
-
-  pc.addTransceiver("audio", { direction: "sendrecv" });
-
-  pc.onicecandidate = (event) => {
-    if (event.candidate) {
-      socket.emit("ice-candidate", {
-        candidate: event.candidate,
-        roomid: document.getElementById("roomid").value
-      });
-    }
-  };
-
-  pc.ontrack = (event) => {
-    console.log("🎧 ontrack fired");
-
-    const audio = document.createElement("audio");
-    audio.srcObject = event.streams[0];
-    audio.autoplay = true;
-    audio.controls = true;
-
-    document.body.appendChild(audio);
-
-    audio.play().catch(err =>
-      console.error("🔇 play blocked:", err)
-    );
-  };
+    console.log("we found this",event.candidate);
+  }
 }
+//receive other user voice
+pc.ontrack=(event)=>{                                     //Other user speaks.  Browser receives audio. You play it automatically
+  const audio=document.createElement('audio');
+  audio.srcObject=event.streams[0];
+  audio.autoplay=true;
+  audio.muted=false;
+  document.body.appendChild(audio);
+  audio.play().catch(error=>{
+    console.log('found this error ',error);
+  })
+}
+}//end of createpc() fxn
 
   // 🔥 THIS LINE FIXES "NO AUDIO"
  pc.addTransceiver("audio", { direction: "sendrecv" });
