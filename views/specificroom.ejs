@@ -315,6 +315,15 @@ if (pc) return;
       credential: "openrelayproject"
     }
   ]
+setInterval(async () => {
+  if (!pc) return;
+  const stats = await pc.getStats();
+  stats.forEach(report => {
+    if (report.type === "inbound-rtp" && report.kind === "audio") {
+      console.log("🎧 Audio bytes received:", report.bytesReceived);
+    }
+  });
+}, 2000);
 })
   // 🔥 THIS LINE FIXES "NO AUDIO"
  pc.addTransceiver("audio", { direction: "sendrecv" });
