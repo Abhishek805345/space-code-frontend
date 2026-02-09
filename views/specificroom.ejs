@@ -318,7 +318,7 @@ async function createpc() {
     ]
   });
 
-  // 🔍 DEBUG: check if audio is actually arriving
+  // 🔍 DEBUG: audio bytes check
   setInterval(async () => {
     if (!pc) return;
 
@@ -330,7 +330,6 @@ async function createpc() {
     });
   }, 2000);
 
-  // keep your existing handlers below
   pc.addTransceiver("audio", { direction: "sendrecv" });
 
   pc.onicecandidate = (event) => {
@@ -347,8 +346,8 @@ async function createpc() {
 
     const audio = document.createElement("audio");
     audio.srcObject = event.streams[0];
-    audio.controls = true;
     audio.autoplay = true;
+    audio.controls = true;
 
     document.body.appendChild(audio);
 
