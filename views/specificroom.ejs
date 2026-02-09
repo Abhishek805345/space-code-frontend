@@ -385,16 +385,22 @@ socket.emit('offer',({
 
 
 //receive offer
-socket.on('offer',async ({offer})=>{
+socket.on('offer', async ({ offer }) => {
   createpc();
-  await pc.setRemoteDescription(offer);
-  const answer=await pc.createAnswer();
+
+  await pc.setRemoteDescription(
+    new RTCSessionDescription(offer)
+  );
+
+  const answer = await pc.createAnswer();
   await pc.setLocalDescription(answer);
-  socket.emit('answer',{
-    roomid:document.getElementById("roomid").value,
+
+  socket.emit('answer', {
+    roomid: document.getElementById("roomid").value,
     answer
-  })
+  });
 });
+
 socket.on('answer',async ({answer})=>{
     if (pc.signalingState !== "have-local-offer") {
     console.warn("Skipping answer, wrong state:", pc.signalingState);
