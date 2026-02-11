@@ -203,7 +203,10 @@
                         </div>
 
                         <div class="room-actions">
-                            <a href="/room/<%= room._id %>" class="btn btn-primary">Enter</a>
+                            <form action="/room/<%= room._id %>" method="post">
+                                <input type="hidden" value="<%=userdata._id%>" name="userid">
+                                <button value="submit" class="btn btn-primary" >Enter</button>
+                            </form>
                             <a href="/invite-mem/<%= room._id %>" class="btn btn-secondary">Invite Members</a>
                         </div>
                     </div>

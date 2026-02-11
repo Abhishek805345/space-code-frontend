@@ -28,14 +28,14 @@ app.get('/',async (req,res,next)=>{
     // }else{
     //   res.render('home',{data:req.session});
     // }
-    res.sendFile(path.join(__dirname,'public','first.html'));
+    res.sendFile(path.join(__dirname,'public','index.html'));
    
 })
 app.get('/about',(req,res,next)=>{
   res.sendFile(path.join(__dirname,'public','about.html'));
 })
 app.get('/home',(req,res,next)=>{
-  res.sendFile(path.join(__dirname,'public','first.html'));
+  res.sendFile(path.join(__dirname,'public','index.html'));
 })
 app.get('/post-home/:id',async (req,res,next)=>{
   const userid=req.params.id;
@@ -45,32 +45,37 @@ app.get('/post-home/:id',async (req,res,next)=>{
 
 
 app.get('/register', (req,res,next)=>{
-  res.render('register',{error:[]});
+  res.render('register',{error:[],errorusername:[]});
 })
 app.post('/post-register',async (req,res,next)=>{
 const data=req.body;
 console.log("registered data is ",data);
 const result=await services.login_data(data);
-if (result.user==true){
-  res.render('register',{error:["user already exists"]});
-}else{
+if (result.username==true){       //username is present to allot
+if (result.gmail==true){            //email already exists in db
+  res.render('register',{error:["user already exists"],errorusername:[]});
+}else{                                  //email does not exsits new user added to db and now redirect to login page
   res.redirect('/login-in');
 }
+}else{
+  res.render('register',{errorusername:['user name already exists'],error:[]});
+}
 
-})
+});
+
 app.get('/login-in',(req,res,next)=>{
-  res.sendFile(path.join(__dirname,'public','login.html'));
+  res.render('login',{error:[],errorpas:[]});
 })
 app.post('/login',async (req,res,next)=>{
   console.log(req.body);
   const result=await services.logincheck(req.body);
   console.log(result);
   if (result.user==false){
-    res.sendFile(path.join(__dirname,'public','nouser.html'))
+    res.render('login',{error:["no user found plz register first"],errorpas:[]})
   }else if (result.login==true){
     res.render('home',{data:result});
   }else{
-    res.send(result.message);
+    res.render('login',{error:[],errorpas:['Wrong password try again']});
   }
 })
 //logout
@@ -164,11 +169,15 @@ app.post('/invite-user',async (req,res,next)=>{
    }
 })
 //enter room middleware 
-app.get('/room/:id',async  (req,res,next)=>{
+app.post('/room/:id',async  (req,res,next)=>{
   const roomid=req.params.id;
+  const data=req.body;
+  //fetching user details
+  const userdetails=await services.userdetails(data.userid);
+  //fetching roomdetails
   const roomdata=await projectservices.findmyroom(roomid);
   console.log("this is the final room data",roomdata);
-  res.render('specificroom',{data:roomdata});
+  res.render('specificroom',{data:roomdata,userdata:userdetails});
 });
 
 app.listen(3000,()=>{

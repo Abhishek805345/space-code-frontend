@@ -187,19 +187,132 @@ nav .logo {
   border: 1px solid #d1d5db;
 }
 
-.chat-section button {
-  margin: 0 12px 12px;
-  padding: 12px;
-  border: none;
-  background: #64748b;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
+/* ===== CHAT ACTION BUTTON LAYOUT ===== */
+.chat-section > button {
+  all: unset;
 }
+
+/* Container alignment */
+.chat-section {
+  position: relative;
+}
+
+/* SEND BUTTON — large, left */
+.chat-section > button:nth-of-type(1) {
+  margin: 8px 0 12px 12px;
+  width: calc(100% - 90px); /* leaves space for mic */
+  padding: 14px 0;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(79,70,229,0.35);
+  transition: all 0.25s ease;
+}
+
+.chat-section > button:nth-of-type(1):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(79,70,229,0.45);
+}
+
+.chat-section > button:nth-of-type(1):active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(79,70,229,0.35);
+}
+
+/* MIC BUTTON — small, right */
+.chat-section > button:nth-of-type(2) {
+  position: absolute;
+  right: 14px;
+  bottom: 18px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: all 0.25s ease;
+}
+
+/* Mic icon size */
+.chat-section > button:nth-of-type(2) h1 {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Mic hover */
+.chat-section > button:nth-of-type(2):hover {
+  transform: scale(1.08);
+  background: #1e293b;
+}
+
+/* Mic active */
+.chat-section > button:nth-of-type(2):active {
+  transform: scale(0.95);
+}
+
 
 .chat-section button:hover {
   background: #475569;
 }
+/* Wrapper: username + message + time */
+#chat-messages > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 75%;
+  margin-bottom: 10px;
+}
+
+/* Username */
+.username {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-left: 6px;
+}
+
+/* Message bubble */
+.chat-message {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #e5e7eb;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+/* Time */
+#chat-messages > div > div:last-child {
+  font-size: 11px;
+  color: #64748b;
+  margin-left: 10px;
+  opacity: 0.8;
+}
+
+/* OPTIONAL: right side for own messages */
+#chat-messages > div.me {
+  margin-left: auto;
+  align-items: flex-end;
+}
+
+#chat-messages > div.me .chat-message {
+  background: #dbeafe;
+}
+
+#chat-messages > div.me .username {
+  color: #1d4ed8;
+}
+
+
 </style>
 </head>
 
@@ -221,7 +334,7 @@ nav .logo {
       <textarea id="code" placeholder="Write your code here...">
         <%if (data.code&& data.code.length>0){%>
           <%=data.code%>
-          <%}%>
+          <%}%>       
       </textarea>
     </div>
 
@@ -233,42 +346,56 @@ nav .logo {
   <!-- CHAT AREA -->
   <div class="chat-section">
     <div class="chat-header">Chat</div>
-
+  <video id="localVideo" autoplay muted playsinline width="250"></video>
+  <video id="remoteVideo" autoplay playsinline width="250"></video>
     <div id="chat-messages" class="chat-messages"></div>
 
-    <button onclick="send()">Send</button>
-    <button onclick="audio()"><h1>🎤</h1></button>
+
 
     <div class="chat-input">
       <input type="text" id="chat" placeholder="Type your message..." />
       <input type="hidden" id="roomid" value="<%=data._id%>" />
       <input type="hidden" id="hostid" value="<%=data.hostid%>" />
       <input type="hidden" id="codeid" value="<%=data._id%>code" />
+      <input type="hidden" id="username" value="<%=userdata.username%>"/>
     </div>
+    <button onclick="send()">Send</button>
+    <button onclick="audio()"><h1>🎤</h1></button>
   </div>
+
 
 </div>
 
-<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
 
 
 <script>
-  let audiounlocked=false;
-  let iamcaller=false;
-  let pc;
-  let localstream;    //pc for the call itself and localstream for microphone
-const socket = io("https://space-code-backend.onrender.com");
+  let pc=null;
+  let localstream=null;    //pc for the call itself and localstream for microphone
+const socket = io("http://localhost:3001");
+//inserting roomid
+const roomid=document.getElementById('roomid').value;
 
 
 socket.emit("join-room", document.getElementById("roomid").value);
 socket.emit("join-coderoom", document.getElementById("codeid").value);
 
-socket.on("receive-message", (data) => {
+socket.on("receive-message", ({message,time,username}) => {
   const chat = document.getElementById("chat-messages");
-  const msg = document.createElement("div");
+   const text=document.createElement('div');    //to wrapp all username chat and time of message
+  const msg = document.createElement("div");    //message
+  const user=document.createElement('div');   //username
+  const tme=document.createElement('div');   //time
+  user.className="username";
   msg.className = "chat-message";
-  msg.textContent = `${data.message} (${data.time})`;
-  chat.appendChild(msg);
+  user.textContent=`${username}`;
+  msg.textContent = `${message}`;
+  tme.textContent=`${time}`;
+  text.appendChild(user);
+  text.appendChild(msg);
+  text.appendChild(tme);
+  chat.appendChild(text);
+  console.log('username is this',username);
 });
 
 socket.on("receive-code", ({ message }) => {
@@ -279,7 +406,8 @@ function send() {
   socket.emit("send-message", {
     roomid: document.getElementById("roomid").value,
     message: document.getElementById("chat").value,
-    hostid: document.getElementById("hostid").value
+    hostid: document.getElementById("hostid").value,
+    username:document.getElementById('username').value
   });
 }
 
@@ -290,89 +418,79 @@ function submitcode() {
     roomid: document.getElementById("roomid").value       //to save the code to db with roomid
   });
 }
-//function for creating the pc peer connection
-async function createpc(){
-  pc=new RTCPeerConnection({
-  iceServers:[{urls:"stun:stun.l.google.com:19302"}]
-})
-//sending ice candidate info to other user
-pc.onicecandidate=(event)=>{                                  //Browser finds ways to reach you. Each way is called an ICE candidate
-  if (event.candidate){                                 //You send it to the other user using Socket.IO
-    socket.emit('ice-candidate',{
-      eventcandidate:event.candidate,
-      roomid:document.getElementById('roomid').value
-    });
-    console.log("we found this",event.candidate);
-  }
-}
-//receive other user voice
-pc.ontrack=(event)=>{                                     //Other user speaks.  Browser receives audio. You play it automatically
-  const audio=document.createElement('audio');
-  audio.srcObject=event.streams[0];
-  audio.autoplay=true;
-  audio.muted=false;
-  document.body.appendChild(audio);
-  audio.play().catch(error=>{
-    console.log('found this error ',error);
-  })
-}
-}//end of createpc() fxn
 
+// audio fxn for creating the peer connection
 async function audio(){
-  //creating a direct connection with other browser
-  if (!audiounlocked){
-    audiounlocked=true;
-    console.log('audio unlocked');
-  }
-  createpc();
-
-
-//getting user audio channel 
-localstream=await  navigator.mediaDevices.getUserMedia({audio:true});
-//attach the user voice to the call
+createpc();
+//seting localstream 
+localstream=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
+//now we will add tracks to pc
 localstream.getTracks().forEach(tracks=>{
   pc.addTrack(tracks,localstream);
 })
-
-if (!iamcaller){
-//creating an offer so that other user accept it and ready to receive the audio
-const offer=await pc.createOffer();
-await pc.setLocalDescription(offer);
-socket.emit('offer',({
-  offer:offer,
-  roomid:document.getElementById("roomid").value
-}))
+document.getElementById('localVideo').srcObject=localstream;
+//on track event 
+pc.ontrack=(event)=>{
+  console.log('remote event received');
+  const remoteVideo=document.getElementById('remoteVideo');
+  remoteVideo.srcObject=event.streams[0];
+}
+//icecandidate sharing 
+pc.onicecandidate=(event)=>{
+  if (event.candidate){
+    socket.emit('send-candidate',{roomid,candidate:event.candidate});
+  }
 }
 
-} //end of audio() fxn 
+//creating offer and sending them
+if (pc){
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  socket.emit('send-offer',({roomid,offer}));
+}
 
 
-//receiving the ice-candidate
- socket.on('ice-candidate',async (icecandidate)=>{
-  if (icecandidate){
-    await pc.addIceCandidate(icecandidate);
-  }
-});
 
+}
 
-//receive offer
-socket.on('offer',async (offer)=>{
-  createpc();
-  await pc.setRemoteDescription(offer);
+function createpc(){
+  pc=new RTCPeerConnection({
+    iceServers:[
+      {
+        urls:[
+          "stun:stun.l.google.com:19302" ,
+          "stun:stun.l.google.com:5349",
+        ]
+      }
+    ]
+  })
+} //createpc fxn ended
+
+//handling 'receive-offer'
+socket.on('receive-offer',async ({offer})=>{
+  //create localstream for user B to send to user A
+  if (!pc) createpc();
+  //creating localstream 
+  localstream=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
+  document.getElementById("localVideo").srcObject=localstream;
+  //adding tracks to pc
+  localstream.getTracks().forEach(track=>{
+    pc.addTrack(track,localstream);
+  });
+
+  await pc.setRemoteDescription(new RTCSessionDescription(offer));
   const answer=await pc.createAnswer();
   await pc.setLocalDescription(answer);
-  socket.emit('answer',{
-    roomid:document.getElementById("roomid").value,
-    answer
-  })
-});
-socket.on('answer',async (answer)=>{
-    if (pc.signalingState !== "have-local-offer") {
-    console.warn("Skipping answer, wrong state:", pc.signalingState);
-    return;
-  }
-  await pc.setRemoteDescription(answer);
-});
+  console.log(answer);
+  socket.emit('send-answer',{roomid,answer});
+})
+socket.on('receive-answer',async ({answer})=>{
+  await pc.setRemoteDescription(new RTCSessionDescription(answer));
+})
+socket.on('receive-candidate',async ({candidate})=>{
+  await pc.addIceCandidate(new RTCIceCandidate(candidate));
+})
+
 
 </script>
 
