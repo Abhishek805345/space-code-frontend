@@ -39,8 +39,12 @@ app.get('/home',(req,res,next)=>{
 })
 app.get('/post-home/:id',async (req,res,next)=>{
   const userid=req.params.id;
-  const result=await services.userdetails(userid);
-  res.render('home',{data:result});
+  const data=await services.userdetails(userid);
+  newdata={
+    data
+  }
+  console.log("this is my data",newdata);
+  res.render('home',{data:newdata});
 })
 
 
