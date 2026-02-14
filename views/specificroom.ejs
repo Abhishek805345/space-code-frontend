@@ -711,7 +711,7 @@ socket.on('receive-candidate',async ({candidate})=>{
       code:document.getElementById('code').value
     }
     //rest api to connect with backend
-  const responce=await fetch('http://localhost:3001/api/save/file',{
+  const responce=await fetch('https://space-code-backend.onrender.com/api/save/file',{
     method:"post",
     credentials:'include',
     headers:{
