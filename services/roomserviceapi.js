@@ -1,7 +1,6 @@
 exports.saveroominfo=async (data)=>{
   const responce=await fetch("https://space-code-backend.onrender.com/api/room/info",{
     method:"post",
-    credentials:'include',
     headers:{
       "Content-Type":"application/json"
     },
@@ -13,7 +12,6 @@ exports.saveroominfo=async (data)=>{
 //fetch rooms
 exports.fetchrooms=async (id)=>{
   const responce=await fetch(`https://space-code-backend.onrender.com/api/saved/room/${id}`,{
-    credentials:'include',
   });
   const result=await responce.json();
   return result;
@@ -22,7 +20,6 @@ exports.fetchrooms=async (id)=>{
 exports.findmyroom= async (id)=>{
   const responce=await fetch(`https://space-code-backend.onrender.com/api/myroom/${id}`,{
     method:'get',
-    credentials:'include'
   });
   const result=await responce.json();
   return result;
@@ -31,7 +28,6 @@ exports.findmyroom= async (id)=>{
 exports.inviteuser=async (data)=>{
   const responce =await fetch("https://space-code-backend.onrender.com/api/invite/user",{
     method:"post",
-    credentials:'include',
     headers:{
       "Content-Type":"application/json"
     },
