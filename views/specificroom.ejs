@@ -41,6 +41,47 @@ nav .logo {
   font-size: 18px;
   font-weight: 700;
 }
+/* =======================
+   NAVBAR HOME BUTTON
+======================= */
+nav a {
+  text-decoration: none;
+}
+
+nav a button {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.45);
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Hover */
+nav a button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.6);
+}
+
+/* Active */
+nav a button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+}
+
+/* Focus (accessibility) */
+nav a button:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
 
 /* =======================
    MAIN LAYOUT
@@ -64,6 +105,7 @@ nav .logo {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  position:relative;
 }
 
 .code-header {
@@ -101,7 +143,7 @@ nav .logo {
   background: #f8fafc;
   border-top: 1px solid #e5e7eb;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .code-actions button {
@@ -311,6 +353,137 @@ nav .logo {
 #chat-messages > div.me .username {
   color: #1d4ed8;
 }
+/* ===== Overlay ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+
+  display: none;              /* hidden on page load */
+  z-index: 1000;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* ===== Popup ===== */
+.popup {
+  width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+
+  animation: popupScale 0.25s ease;
+}
+
+/* ===== Animation (IMPORTANT FIX) ===== */
+@keyframes popupScale {
+  from {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== Close Button ===== */
+.close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  color: #475569;
+}
+
+.close-btn:hover {
+  color: #ef4444;
+}
+
+/* ===== Content ===== */
+.popup h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 6px 0 18px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* ===== Form ===== */
+.popup form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popup label {
+  font-size: 14px;
+  color: #334155;
+}
+
+.popup input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  font-size: 14px;
+  outline: none;
+}
+
+.popup input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== Actions ===== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.actions .cancel {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.actions .cancel:hover {
+  background: #e2e8f0;
+}
+
+.actions .primary {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+}
+
+.actions .primary:hover {
+  opacity: 0.9;
+}
+
 
 
 </style>
@@ -321,6 +494,9 @@ nav .logo {
 <!-- NAVBAR -->
 <nav>
   <div class="logo">Collab Room</div>
+  <a href="/after-home/<%=userdata._id%>"><button>Home</button></a>
+  <a href="/get-room/<%= userdata._id %>">Code Rooms</a>
+  <a href="/get-interview-room/<%= userdata._id %>">Interview Rooms</a>
 </nav>
 
 <!-- MAIN -->
@@ -337,8 +513,37 @@ nav .logo {
           <%}%>       
       </textarea>
     </div>
+<!-- Overlay -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <button class="close-btn" onclick="closePopup()">✕</button>
+
+    <h2>Create New File</h2>
+    <p class="subtitle">Give your file a meaningful name</p>
+
+   
+      <label for="filename">File name</label>
+      <input 
+        type="text" 
+        id="filename" 
+        placeholder="example.txt" 
+        name="filename"
+        required
+      >
+      
+      <input type="hidden" value="<%=userdata.username%>" id="saver"> 
+      <div class="actions">
+        <button type="button" class="cancel" onclick="closePopup()">Cancel</button>
+        <button onclick="savefile(),closePopup()" class="primary">Create</button>
+      </div>
+   
+  </div>
+</div>
+
+
 
     <div class="code-actions">
+      <button onclick="openPopup()">Create a code file</button>
      <button onclick="submitcode()">▶ Submit Code</button>
     </div>
   </div>
@@ -346,8 +551,7 @@ nav .logo {
   <!-- CHAT AREA -->
   <div class="chat-section">
     <div class="chat-header">Chat</div>
-  <video id="localVideo" autoplay muted playsinline width="250"></video>
-  <video id="remoteVideo" autoplay playsinline width="250"></video>
+    <audio id="remoteAudio" autoplay></audio>
     <div id="chat-messages" class="chat-messages"></div>
 
 
@@ -366,13 +570,13 @@ nav .logo {
 
 </div>
 
-<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
 
 
 <script>
   let pc=null;
   let localstream=null;    //pc for the call itself and localstream for microphone
-const socket = io("https://space-code-backend.onrender.com");
+const socket = io("http://localhost:3001");
 //inserting roomid
 const roomid=document.getElementById('roomid').value;
 
@@ -423,17 +627,16 @@ function submitcode() {
 async function audio(){
 createpc();
 //seting localstream 
-localstream=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
+localstream=await navigator.mediaDevices.getUserMedia({audio:true});
 //now we will add tracks to pc
 localstream.getTracks().forEach(tracks=>{
   pc.addTrack(tracks,localstream);
 })
-document.getElementById('localVideo').srcObject=localstream;
 //on track event 
 pc.ontrack=(event)=>{
   console.log('remote event received');
-  const remoteVideo=document.getElementById('remoteVideo');
-  remoteVideo.srcObject=event.streams[0];
+  const remoteAudio=document.getElementById('remoteAudio');
+  remoteAudio.srcObject=event.streams[0];
 }
 //icecandidate sharing 
 pc.onicecandidate=(event)=>{
@@ -471,8 +674,7 @@ socket.on('receive-offer',async ({offer})=>{
   //create localstream for user B to send to user A
   if (!pc) createpc();
   //creating localstream 
-  localstream=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
-  document.getElementById("localVideo").srcObject=localstream;
+  localstream=await navigator.mediaDevices.getUserMedia({audio:true});
   //adding tracks to pc
   localstream.getTracks().forEach(track=>{
     pc.addTrack(track,localstream);
@@ -491,8 +693,36 @@ socket.on('receive-candidate',async ({candidate})=>{
   await pc.addIceCandidate(new RTCIceCandidate(candidate));
 })
 
+//extra 
+  function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+  }
 
-</script>
+  function openPopup() {
+    document.getElementById("overlay").style.display = "flex";
+  }
+
+   //saving the code to database without reloading
+  async function savefile(){
+    const data={
+      roomid:roomid,
+      filename:document.getElementById('filename').value,
+      saver:document.getElementById('saver').value,
+      code:document.getElementById('code').value
+    }
+    //rest api to connect with backend
+  const responce=await fetch('http://localhost:3001/api/save/file',{
+    method:"post",
+    credentials:'include',
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify(data)
+    });
+  const result=await responce.json();
+  console.log(result);
+  }
+</script> 
 
 </body>
 </html>

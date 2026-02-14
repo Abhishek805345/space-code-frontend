@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Settings | Space Code</title>
+
+<style>
+/* =======================
+   RESET & BASE
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* =======================
+   NAVBAR
+======================= */
+nav {
+  height: 60px;
+  background: #0f172a;
+  color: #fff;
+  padding: 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.25);
+}
+
+nav .logo {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+nav ul li a {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+nav ul li a:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+#hambutton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.ham {
+  position: absolute;
+  top: 64px;
+  right: 24px;
+  width: 220px;
+  background: #020617;
+  border-radius: 14px;
+  padding: 12px;
+  display: none;
+}
+
+.ham.active {
+  display: block;
+}
+
+.ham button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #e5e7eb;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.ham button:hover {
+  background: #1e293b;
+}
+
+/* =======================
+   SETTINGS LAYOUT
+======================= */
+.settings-container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 24px;
+}
+
+.settings-header {
+  margin-bottom: 36px;
+}
+
+.settings-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.settings-header p {
+  margin-top: 6px;
+  color: #64748b;
+}
+
+/* GRID */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+}
+
+/* LEFT INFO COLUMN */
+.settings-info {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+  height: fit-content;
+}
+
+.settings-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.settings-info p {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.settings-info a {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.settings-info a:hover {
+  text-decoration: underline;
+}
+
+/* =======================
+   SETTINGS CARD
+======================= */
+.settings-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 30px;
+  margin-bottom: 28px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+}
+
+.settings-card h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* FORM */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: white;
+}
+
+.btn-danger {
+  background: #ffffff;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* DELETE POPUP */
+.delete.card {
+  position: fixed;
+  top: 34vh;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 420px;
+  width: 100%;
+  padding: 26px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 40px rgba(15,23,42,0.18);
+  text-align: center;
+  display: none;
+  z-index: 1000;
+}
+
+.delete.card p {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.delete.card button {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 36px;
+  text-align: center;
+  margin-top: 80px;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">Space Code</div>
+  <ul>
+    <li><a href="/post-home/<%=userdata._id%>">Home</a></li>
+    <li><a href="/get-room/<%= userdata._id %>">Code Rooms</a></li>
+    <li><a href="/get-interview-room/<%= userdata._id %>">Interview Rooms</a></li>
+    <li><a href="/logout/<%=userdata._id%>">Logout</a></li>
+    <li>
+      <button id="hambutton" onclick="expand()">
+        <img src="/ham.png" width="22">
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<div class="ham">
+ <a href="/room/setting/<%=userdata._id%>"><button>Room settings</button></a>
+</div>
+
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Account Settings</h1>
+    <p>Manage your personal information and security preferences</p>
+  </div>
+
+  <div class="settings-grid">
+
+    <!-- LEFT COLUMN -->
+    <div class="settings-info">
+      <h3>Password Change</h3>
+      <p>
+        Want to change your password?<br><br>
+        For security reasons, password updates are handled using the
+        <strong>Forgot Password</strong> flow.
+        <br><br>
+        Please <a href="/logout/<%=userdata._id%>">logout</a> and use
+        <strong>Forgot Password</strong> on the login page.
+      </p>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <form action="/update/account/<%=userdata._id%>" method="POST">
+        <div class="settings-card">
+          <h2>Profile Information</h2>
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" value="<%= userdata.username %>" name="username">
+          </div>
+
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" value="<%= userdata.rusername %>" name="rusername">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" value="<%= userdata.email %>" name="email">
+          </div>
+
+          <button class="btn btn-primary" type="submit">Save Changes</button>
+        </div>
+      </form>
+
+      <div class="settings-card">
+        <h2 style="color:#991b1b;">Danger Zone</h2>
+        <p style="color:#64748b;line-height:1.6;margin-bottom:16px;">
+          Deleting your account is permanent and cannot be undone.<br><br>
+          All your personal information, project rooms, and associated data
+          will be permanently removed from Space Code.
+        </p>
+        <button class="btn btn-danger" onclick="del()">Delete Account</button>
+      </div>
+
+      <div class="delete card">
+        <p>Are you sure you want to delete your account?</p>
+        <a href="/delete/account/<%=userdata._id%>">
+          <button style="background:#dc2626;color:#fff;">Yes, Delete</button>
+        </a>
+        <br><br>
+        <button onclick="hide()">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Space Code. All rights reserved.
+</footer>
+
+<script>
+function expand() {
+  document.querySelector('.ham').classList.toggle('active');
+}
+function del(){
+  document.querySelector('.delete.card').style.display='block';
+}
+function hide(){
+  document.querySelector('.delete.card').style.display='none';
+}
+</script>
+
+</body>
+</html>

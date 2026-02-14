@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Action Not Allowed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #fef2f2, #fff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #ffffff;
+      max-width: 420px;
+      width: 90%;
+      padding: 28px 26px;
+      border-radius: 16px;
+      border: 1px solid #fecaca;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #991b1b;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: #ef4444;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon">🚫</div>
+    <h1>Action Not Allowed</h1>
+    <p>
+      You are <strong>not the host</strong> of this room.<br />
+      Only the host has permission to delete it.
+    </p>
+    <p class="note">
+      Please ask the room host to delete the room on your behalf.
+    </p>
+
+    <a href="/room/setting/<%=userid%>"><button class="btn">Go Back</button></a>
+  </div>
+
+</body>
+</html>

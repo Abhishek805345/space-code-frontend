@@ -6,161 +6,294 @@
     <title>Project Rooms</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+        /* =======================
+   RESET & BASE
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
 
-        body {
-            background-color: #f4f6f8;
-        }
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
 
-        /* Navbar */
-        nav {
-            background-color: #1f2933;
-            color: #fff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
+/* =======================
+   NAVBAR
+======================= */
+nav {
+  height: 60px;
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.25);
+}
 
-        nav .logo {
-            font-size: 22px;
-            font-weight: bold;
-        }
+nav .logo {
+  font-size: 18px;
+  font-weight: 600;
+}
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
+nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 6px 10px;
-            border-radius: 4px;
-        }
+nav ul li a {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
 
-        nav ul li a:hover {
-            background-color: #3a4a5a;
-        }
+nav ul li a:hover {
+  background: rgba(255,255,255,0.08);
+}
+/* =======================
+   HAMBURGER BUTTON
+======================= */
+#hambutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
 
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 50vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            background-color: black;
-        }
+#hambutton img {
+  display: block;
+  opacity: 0.9;
+}
 
-        .hero-video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.25;
-        }
+/* =======================
+   HAMBURGER MENU
+======================= */
+.ham {
+  position: absolute;
+  top: 64px;
+  right: 24px;
+  width: 220px;
+  background: #020617;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+  display: none;
+  z-index: 999;
+}
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            color: white;
-        }
+.ham.active {
+  display: block;
+}
 
-        .hero-content h1 {
-            font-size: 44px;
-            margin-bottom: 10px;
-        }
+.ham ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-        .hero-content p {
-            font-size: 20px;
-        }
+.ham ul li button {
+  width: 100%;
+  background: transparent;
+  color: #e5e7eb;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
 
-        /* Content */
-        .container {
-            padding: 40px;
-        }
+.ham ul li button:hover {
+  background: #1e293b;
+}
 
-        .rooms-grid {
-            max-width: 1100px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
+/* =======================
+   HERO
+======================= */
+.hero {
+  position: relative;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #020617;
+  overflow: hidden;
+}
 
-        .room-card {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.18;
+}
 
-        .room-card h3 {
-            color: #1f2933;
-            margin-bottom: 8px;
-        }
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #f8fafc;
+}
 
-        .room-card p {
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
+.hero-content h1 {
+  font-size: 42px;
+  font-weight: 700;
+}
 
-        .room-meta {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 15px;
-        }
+.hero-content p {
+  margin-top: 6px;
+  font-size: 17px;
+  color: #cbd5e1;
+}
 
-        .room-actions {
-            display: flex;
-            gap: 10px;
-        }
+/* =======================
+   CONTAINER
+======================= */
+.container {
+  padding: 60px 40px;
+}
 
-        .btn {
-            flex: 1;
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 6px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-        }
+/* =======================
+   ROOMS GRID
+======================= */
+.rooms-grid {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
 
-        .btn-primary {
-            background-color: #2563eb;
-        }
+/* =======================
+   ROOM CARD
+======================= */
+.room-card {
+  background: #ffffff;
+  padding: 24px 26px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-        }
+.room-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(15,23,42,0.1);
+}
 
-        .btn-secondary {
-            background-color: #64748b;
-        }
+.room-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
 
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
+.room-card p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
 
-        .empty-state {
-            text-align: center;
-            color: #555;
-            margin-top: 40px;
-        }
+/* =======================
+   ROOM META
+======================= */
+.room-meta {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+/* =======================
+   ROOM ACTIONS (FIXED)
+======================= */
+.room-actions {
+  display: flex;
+  gap: 12px;
+
+}
+.room-actions > a {
+  flex: 1;
+  display: flex;
+}
+
+
+/* Make form equal width */
+.room-actions form {
+  flex: 1;
+  display: flex;
+}
+
+/* Normalize both button & link */
+.room-actions .btn {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+/* Primary */
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: white;
+  box-shadow: 0 6px 16px rgba(79,70,229,0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(79,70,229,0.35);
+}
+
+/* Secondary */
+.btn-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+/* =======================
+   EMPTY STATE
+======================= */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+  color: #64748b;
+}
+
+.empty-state h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #1e293b;
+}
+
     </style>
 </head>
 <body>
@@ -170,10 +303,18 @@
         <div class="logo">Hi, <%= userdata.username %></div>
         <ul>
             <li><a href="/post-home/<%=userdata._id%>">Home</a></li>
-            <li><a href="/get-room/<%= userdata._id %>">Project Rooms</a></li>
+            <li><a href="/get-room/<%= userdata._id %>">Code Rooms</a></li>
+            <li><a href="/get-interview-room/<%= userdata._id %>">Interview Rooms</a></li>
             <li><a href="/logout/<%= userdata._id %>">Logout</a></li>
+             <li><div ><button id="hambutton" onclick="expand()"><img src="/ham.png" width="22px"/></button> </div></li>
         </ul>
     </nav>
+     <div class="ham">
+        <ul>
+            <li><a href="/account/setting/<%=userdata._id%>"><button>settings</button></a> </li>
+       <li> <a href="/room/setting/<%=userdata._id%>"><button>Room settings</button></a></li>
+        </ul>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -220,6 +361,10 @@
         </div>
 
     </div>
-
+<script>
+    function expand() {
+  document.querySelector('.ham').classList.toggle('active');
+}
+</script>
 </body>
 </html>

@@ -10,6 +10,7 @@ const projectservices=require('./services/roomserviceapi');
 
 const app=express();                                                 //after all this add socket.io in html file using predefined script src
 app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
@@ -22,13 +23,17 @@ app.set('views',path.join(__dirname,'views'));
 
 app.get('/',async (req,res,next)=>{
     // const result=await services.sess();
-    // console.log(result);
+    // console.log('session request result is',result);
     // if (result.login==false){
     //    res.sendFile(path.join(__dirname,'public','first.html'));
-    // }else{
-    //   res.render('home',{data:req.session});
+    // }else if (result.login==true){
+    //   let data={
+    //     result
+    //   }
+    //   res.render('home',{data:data});
     // }
     res.sendFile(path.join(__dirname,'public','index.html'));
+    
    
 })
 app.get('/about',(req,res,next)=>{
@@ -73,14 +78,25 @@ app.get('/login-in',(req,res,next)=>{
 app.post('/login',async (req,res,next)=>{
   console.log(req.body);
   const result=await services.logincheck(req.body);
-  console.log(result);
+  console.log('result is this in this page', result);
   if (result.user==false){
     res.render('login',{error:["no user found plz register first"],errorpas:[]})
   }else if (result.login==true){
-    res.render('home',{data:result});
+    res.redirect(`/after-home/${result.data._id}`);
   }else{
     res.render('login',{error:[],errorpas:['Wrong password try again']});
   }
+})
+app.get('/after-home/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  console.log('user id is ',userid);
+  const result=await services.userdetails(userid);
+  let data={
+    data:result
+  }
+  console.log('destructured adata is',data);
+  res.render('home',{data:data});
+
 })
 //logout
 app.get('/logout/:id',async (req,res,next)=>{
@@ -126,6 +142,12 @@ app.post('/reset-password/:id',async (req,res,next)=>{
     res.redirect('/login-in');
   }
 })
+//account settings
+app.get('/account/setting/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  const result=await services.userdetails(userid);
+  res.render('setting',{userdata:result});
+})
 
 //creating a new project middleware
 app.get('/create-project/:id',(req,res,next)=>{
@@ -135,17 +157,38 @@ app.get('/create-project/:id',(req,res,next)=>{
 app.post('/post-req',async (req,res,next)=>{
   const data=req.body;
   const returneddata=await projectservices.saveroominfo(data);
-  console.log(returneddata);
+  console.log('this is the final data',returneddata);
   if (returneddata.result.acknowledged==true){
-    res.render('room',{data:returneddata.data,roomid:returneddata.result.insertedId});
+    res.render('created',{roomid:returneddata.result.insertedId,userid:returneddata.data._id});
   }
 })
+//middleware for codding rooms it shows only coding rooms
 app.get('/get-room/:id',async (req,res,next)=>{
   const userid=req.params.id;
   const result=await projectservices.fetchrooms(userid);
+  let array=[];
+  result.forEach(room=>{
+      if (room.roomType=='Code'){
+        array.push(room);
+  }
+  })
   //fetching user details
   const userdata=await services.userdetails(userid);
-  res.render('myrooms',{data:result,userdata:userdata});
+  res.render('myrooms',{data:array,userdata:userdata});
+})
+//middleware for interview rooms
+app.get('/get-interview-room/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  const result=await projectservices.fetchrooms(userid);
+  let array=[];
+  result.forEach(room=>{
+      if (room.roomType=='Interview'){
+        array.push(room);
+  }
+  })
+  //fetching user details
+  const userdata=await services.userdetails(userid);
+  res.render('myrooms',{data:array,userdata:userdata});
 })
 //inviting middleware
 app.get('/invite-mem/:id',async (req,res,next)=>{
@@ -176,6 +219,7 @@ app.post('/invite-user',async (req,res,next)=>{
 app.post('/room/:id',async  (req,res,next)=>{
   const roomid=req.params.id;
   const data=req.body;
+  console.log('data and roomid is ',data,roomid);
   //fetching user details
   const userdetails=await services.userdetails(data.userid);
   //fetching roomdetails
@@ -183,6 +227,65 @@ app.post('/room/:id',async  (req,res,next)=>{
   console.log("this is the final room data",roomdata);
   res.render('specificroom',{data:roomdata,userdata:userdetails});
 });
+//delete middleware
+app.get('/delete/account/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  const result=await services.deleteuser(userid);
+  if (result.status==true){
+    res.redirect('/');
+  }else if (result.status==false){
+    res.render('notpossible',{userid:userid});
+  }
+
+})
+//updating account data
+app.post('/update/account/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  const data=req.body;
+  console.log('update able data is this',data);
+  const result=await services.updateuser(userid,data);
+  if (result.status==true){
+    res.redirect(`/account/setting/${userid}`);
+  }else{
+    res.status(404).send('Updation failed try again later after some time');
+  }
+})
+//room setting middleware
+app.get('/room/setting/:id',async (req,res,next)=>{
+  const userid=req.params.id;
+  const result=await projectservices.fetchrooms(userid);
+  console.log('room data is ',result);
+  res.render('editroom',{roomdata:result,userid:userid});
+})
+//deleting the room
+app.post('/delete/room/:id',async (req,res,next)=>{
+  const datauserid=req.body;
+  const roomid=req.params.id;
+  const result=await projectservices.deleteroom(roomid,datauserid);
+  if (result.status==true){
+    res.redirect(`/room/setting/${result.userid}`);
+  }else{
+    res.render('nothost',{userid:result.userid});
+  }
+})
+//edit room info middleware
+app.get('/edit/room/:id',async (req,res,next)=>{
+  const roomid=req.params.id;
+  const result=await projectservices.findmyroom(roomid);
+  res.render('editroominfo',{roominfo:result});
+})
+//post update of edit room middleware
+app.post('/update-room/:id',async (req,res,next)=>{
+  const roomid=req.params.id;
+  const data=req.body;
+  const result=await projectservices.updateroom(roomid,data);
+  console.log(result);
+  if (result.status==true){
+    res.redirect(`/room/setting/${result.userid}`);
+  }else{
+    res.status(404).send('Plz Try again later');
+  }
+})
 
 app.listen(3000,()=>{
   console.log(`Your server is running at http:localhost:3000`);
