@@ -582,13 +582,13 @@ nav a button:focus-visible {
 
 </div>
 
-<script src="http://localhost:3001/socket.io/socket.io.js"></script>
+<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
 
 
 <script>
   let pc=null;
   let localstream=null;    //pc for the call itself and localstream for microphone
-const socket = io("http://localhost:3001");
+const socket = io("https://space-code-backend.onrender.com");
 //inserting roomid
 const roomid=document.getElementById('roomid').value;
 
@@ -736,7 +736,7 @@ socket.on('receive-candidate',async ({candidate})=>{
       code:document.getElementById('code').value
     }
     //rest api to connect with backend
-  const responce=await fetch('http://localhost:3001/api/save/file',{
+  const responce=await fetch('https://space-code-backend.onrender.com/api/save/file',{
     method:"post",
     credentials:'include',
     headers:{
