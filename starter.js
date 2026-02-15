@@ -253,7 +253,8 @@ app.post('/update/account/:id',async (req,res,next)=>{
 //room setting middleware
 app.get('/room/setting/:id',async (req,res,next)=>{
   const userid=req.params.id;
-  const result=await projectservices.fetchrooms(userid);
+  //finding userhosted room
+  const result=await projectservices.findmyhostedroom(userid);
   console.log('room data is ',result);
   res.render('editroom',{roomdata:result,userid:userid});
 })

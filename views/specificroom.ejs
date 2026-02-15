@@ -483,6 +483,18 @@ nav a button:focus-visible {
 .actions .primary:hover {
   opacity: 0.9;
 }
+.joined-mes {
+  display: inline-block;
+  margin: 10px auto;
+  padding: 6px 14px;
+  background-color: #e5e7eb;
+  color: #374151;
+  font-size: 13px;
+  border-radius: 999px;
+  text-align: center;
+  max-width: 80%;
+}
+
 
 
 
@@ -570,19 +582,30 @@ nav a button:focus-visible {
 
 </div>
 
-<script src="https://space-code-backend.onrender.com/socket.io/socket.io.js"></script>
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
 
 
 <script>
   let pc=null;
   let localstream=null;    //pc for the call itself and localstream for microphone
-const socket = io("https://space-code-backend.onrender.com");
+const socket = io("http://localhost:3001");
 //inserting roomid
 const roomid=document.getElementById('roomid').value;
 
 
-socket.emit("join-room", document.getElementById("roomid").value);
+socket.emit("join-room", {
+  roomid:document.getElementById("roomid").value ,
+username:document.getElementById('username').value});
 socket.emit("join-coderoom", document.getElementById("codeid").value);
+//user joined the room message
+socket.on('joined-room',({username})=>{
+  console.log('data received from joined-event');
+  const chatmess=document.getElementById('chat-messages');
+  const newmes=document.createElement('div');
+  newmes.className='joined-mes';
+  newmes.textContent=`${username} joined the Room`;
+  chatmess.appendChild(newmes);
+})
 
 socket.on("receive-message", ({message,time,username}) => {
   const chat = document.getElementById("chat-messages");
@@ -607,12 +630,14 @@ socket.on("receive-code", ({ message }) => {
 });
 
 function send() {
+  
   socket.emit("send-message", {
     roomid: document.getElementById("roomid").value,
     message: document.getElementById("chat").value,
     hostid: document.getElementById("hostid").value,
     username:document.getElementById('username').value
   });
+  document.getElementById('chat').value='';
 }
 
 function submitcode() {
@@ -711,7 +736,7 @@ socket.on('receive-candidate',async ({candidate})=>{
       code:document.getElementById('code').value
     }
     //rest api to connect with backend
-  const responce=await fetch('https://space-code-backend.onrender.com/api/save/file',{
+  const responce=await fetch('http://localhost:3001/api/save/file',{
     method:"post",
     credentials:'include',
     headers:{
