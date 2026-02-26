@@ -1,5 +1,5 @@
 exports.saveroominfo=async (data)=>{
-  const responce=await fetch("http://localhost:3001/api/room/info",{
+  const responce=await fetch("https://space-code-backend.onrender.com/api/room/info",{
     method:"post",
     credentials:'include',
     headers:{
@@ -12,7 +12,7 @@ exports.saveroominfo=async (data)=>{
 }
 //fetch rooms
 exports.fetchrooms=async (id)=>{
-  const responce=await fetch(`http://localhost:3001/api/saved/room/${id}`,{
+  const responce=await fetch(`https://space-code-backend.onrender.com/api/saved/room/${id}`,{
     credentials:'include',
   });
   const result=await responce.json();
@@ -20,7 +20,7 @@ exports.fetchrooms=async (id)=>{
 }
 //fetch single room data
 exports.findmyroom= async (id)=>{
-  const responce=await fetch(`http://localhost:3001/api/myroom/${id}`,{
+  const responce=await fetch(`https://space-code-backend.onrender.com/api/myroom/${id}`,{
     method:'get',
     credentials:'include'
   });
@@ -29,7 +29,7 @@ exports.findmyroom= async (id)=>{
 }
 //invitation api
 exports.inviteuser=async (data)=>{
-  const responce =await fetch("http://localhost:3001/api/invite/user",{
+  const responce =await fetch("https://space-code-backend.onrender.com/api/invite/user",{
     method:"post",
     credentials:'include',
     headers:{
@@ -42,7 +42,7 @@ exports.inviteuser=async (data)=>{
 }
 //deleting room
 exports.deleteroom=async (roomid,data)=>{
-  const response=await fetch(`http://localhost:3001/api/delete/${roomid}`,{
+  const response=await fetch(`https://space-code-backend.onrender.com/api/delete/${roomid}`,{
     method:'delete',
     headers:{
       "Content-Type":"application/json"
@@ -54,7 +54,7 @@ exports.deleteroom=async (roomid,data)=>{
 }
 //update room info
 exports.updateroom=async (roomid,data)=>{
-  const response=await fetch(`http://localhost:3001/api/update/room/${roomid}`,{
+  const response=await fetch(`https://space-code-backend.onrender.com/api/update/room/${roomid}`,{
     method:'put',
     headers:{
       "Content-Type":"application/json"
@@ -66,7 +66,7 @@ exports.updateroom=async (roomid,data)=>{
 }
 //find my hosted rooms
 exports.findmyhostedroom=async (userid)=>{
-  const response=await fetch(`http://localhost:3001/api/hosted/rooms/${userid}`);
+  const response=await fetch(`https://space-code-backend.onrender.com/api/hosted/rooms/${userid}`);
   const result=await response.json();
   return result;
 }
